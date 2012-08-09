@@ -1,0 +1,50 @@
+MgoQuery (MongoDB Query Parser)
+===============================
+
+A search-like interface that constructs a valid MongoDB query.
+
+MongoDB provides a flexible query model that is powerful, yet somewhat
+intimidating to write for non-technical users. Mqueryparser aims to
+create a concise search-like parser.
+
+This type of parser has two main goals:
+
+ 1. Provide a safe and limited interface for querying MongoDB.
+ 2. Provide a query language that is URL friendly
+
+MQueryParser allows an API developer to create a thin layer above a
+raw query that can be validated and tested for injection like attacks
+while providing a simple interface via the URL.
+
+
+Query Grammar
+-------------
+
+The query grammar is inspired by tools such as Xapian, Lucene and
+GMail's advance query search.
+
+Here is an example of the basic format: ::
+
+  "x>3, x<5" | "y>10, z:True"
+
+Which translates to: ::
+
+  {'$or': [{'$and': [{'x': {'$gte': 3}},
+                     {'x': {'$lte': 5}}]},
+           {'$and': [{'y': {'$gte': 10}},
+                     {'z': True}]}]}
+
+
+The operators are as follows:
+
+  equals = ":"
+  greater than or equal to >= ">"
+  less than or equal to <= "<"
+
+The "," acts as an AND operator meaning the following
+field/operator/value will used in conjunction with the
+preceeding.
+
+The "|" acts as an OR operator such that any match of the
+field/operator/value combinations should match.
+
