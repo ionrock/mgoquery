@@ -4,15 +4,20 @@ from pyparsing import (Word, alphanums, Suppress,
 
 
 class Expr(object):
-    def __init__(self, op, k, v):
+    def __init__(self, op, k, v, conversion=None):
         self.op = op
         self.k = k
         self.v = v
+        self.conversion = conversion
 
     def as_dict(self):
+        value = self.v
+        if self.conversion:
+            value = self.conversion(self.k, self.v)
+
         if self.op == '$eq':
-            return {self.k: self.v}
-        return {self.k: {self.op: self.v}}
+            return {self.k: value}
+        return {self.k: {self.op: value}}
 
 
 class AndOr(object):
@@ -37,9 +42,10 @@ class Query(object):
 
 class Parser(object):
 
-    def __init__(self):
+    def __init__(self, conversion=None):
         self._parser = self.parser()
         self._query = {}
+        self.conversion = conversion
 
     def parser(self):
         """
@@ -92,7 +98,7 @@ class Parser(object):
             '>': '$gte', '<': '$lte', ':': '$eq'
         }
         k, op, v = toks
-        return [Expr(ops[op], k, v)]
+        return [Expr(ops[op], k, v, self.conversion)]
 
     def handle_and_or(self, s, loc, toks):
         """

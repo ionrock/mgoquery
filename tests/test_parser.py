@@ -5,6 +5,7 @@ One thing to note is that MgoQuery is not doing anything regarding
 converting types. That is the responsibility of the caller to do so or
 extend the Query class to do it.
 """
+import pytest
 
 from mgoquery import Parser, Query
 
@@ -65,3 +66,47 @@ class TestParser(object):
                                                      {'x': {'$lte': '5'}}]},
                                            {'$or': [{'y': {'$gte': '10'}},
                                                     {'y': 'None'}]}]}
+
+
+class TestParseAndValidate(object):
+    """
+    The parser can accept a validator callable that can be used to
+    convert any values to the proper type.
+
+    Here is an example using a set list of converter functions ::
+
+      def format_values(k, v):
+          conversion_map = {
+              'start': parse_datetime,
+              'end': parse_datetime,
+              'size': int,
+              'amount': float,
+          }
+          return conversion_map.get(k, lambda x: x)
+
+    As MongoDB doesn't enforce any sort of type constraint on a
+    document, we depend on the key in order to supply the correct
+    conversion method.
+    """
+
+    def to_int(k, v):
+        return int(v)
+
+    p = Parser(conversion=to_int)
+    query_tests = [
+        ('x:1', {'x': 1}),
+        ('x>1', {'x': {'$gte': 1}}),
+        ('x:1|a:2', {'$or': [{'x': 1}, {'a': 2}]}),
+        ('"x:1,y:2"|"foo:5,bar:6"', {'$or': [{'$and': [{'x': 1},
+                                                       {'y': 2}]},
+                                             {'$and': [{'foo': 5},
+                                                       {'bar': 6}]}]})
+    ]
+
+    def get_query(self, query):
+        return Query(self.p.parse(query))
+
+    @pytest.mark.parametrize(('query', 'expected'), query_tests)
+    def test_map(self, query, expected):
+        q = self.get_query(query)
+        assert q.as_dict() == expected
