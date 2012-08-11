@@ -18,6 +18,11 @@ class TestParser(object):
             ('x : y , a : b',),
             ('" x > y | x < z " , "a > b , a < c"',),
             ('x > y, a > b',),
+
+            # This fails but it might be nice if we returned:
+            #   {'x': 'y', 'a': 'b'}
+            # Since mongo uses AND implicitly
+            # ('x:y a:b',),
         ])
     def test_whitespace(self, query):
         """
@@ -126,4 +131,3 @@ class TestParseAndValidate(object):
     def test_map(self, query, expected):
         q = self.get_query(query)
         assert q.as_dict() == expected
-
