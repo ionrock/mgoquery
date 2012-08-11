@@ -35,10 +35,7 @@ Which translates to: ::
 Spaces are optional which means the above query could be rewritten as: ::
 
   "x>3,x<5"|"y>10,z:True"
-
-Or: ::
-
-  "x>3,x<5"|"y>10,z:True"
+  "x>3, x<5" | "y>10, z:True"
 
 Expressions
 ~~~~~~~~~~~
