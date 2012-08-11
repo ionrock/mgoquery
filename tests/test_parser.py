@@ -12,6 +12,22 @@ from mgoquery import Parser, Query
 
 class TestParser(object):
 
+    @pytest.mark.parametrize(
+        ('query',), [
+            ('x : y',),
+            ('x : y , a : b',),
+            ('" x > y | x < z " , "a > b , a < c"',),
+            ('x > y, a > b',),
+        ])
+    def test_whitespace(self, query):
+        """
+        Makesure we get the same results no matter the whitespace.
+        """
+        p = Parser()
+        withspace = Query(p.parse(query)).as_dict()
+        nospace = Query(p.parse(query.replace(' ', ''))).as_dict()
+        assert withspace == nospace
+
     def test_operators(self):
         p = Parser()
         eq = Query(p.parse('x:y'))
@@ -110,3 +126,4 @@ class TestParseAndValidate(object):
     def test_map(self, query, expected):
         q = self.get_query(query)
         assert q.as_dict() == expected
+
