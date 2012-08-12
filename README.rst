@@ -144,7 +144,7 @@ construct queries: ::
   [GCC 4.2.1 (Based on Apple Inc. build 5658) (LLVM build 2335.15.00)] on darwin
   Type "help", "copyright", "credits" or "license" for more information.
   >>> from pprint import pprint
-  >>> from mgoquery import Parser, Query
+  >>> from mgoquery import Parser
   >>> p = Parser()
   >>> result = p.parse('x > 5, y < 3')
   >>> print result
@@ -173,7 +173,7 @@ suggestion as to what type to use.
 Here is an example using a potential date parsing function: ::
 
   from mylibs import parse_date
-  from mgoquery import Parser, Query
+  from mgoquery import Parser
 
   def value_conversion(key, value):
       if 'date' in key or 'time' in key:
