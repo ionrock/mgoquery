@@ -87,7 +87,9 @@ class Parser(object):
         return grammar
 
     def parse(self, s):
-        return self._parser.parseString(s)
+        r = self._parser.parseString(s)
+        q = Query(r)
+        return q.as_dict()
 
     def handle_expression(self, s, loc, toks):
         """

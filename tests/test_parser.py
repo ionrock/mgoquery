@@ -7,7 +7,7 @@ extend the Query class to do it.
 """
 import pytest
 
-from mgoquery import Parser, Query
+from mgoquery import Parser
 
 
 class TestParser(object):
@@ -29,61 +29,61 @@ class TestParser(object):
         Makesure we get the same results no matter the whitespace.
         """
         p = Parser()
-        withspace = Query(p.parse(query)).as_dict()
-        nospace = Query(p.parse(query.replace(' ', ''))).as_dict()
+        withspace = p.parse(query)
+        nospace = p.parse(query.replace(' ', ''))
         assert withspace == nospace
 
     def test_operators(self):
         p = Parser()
-        eq = Query(p.parse('x:y'))
-        assert eq.as_dict() == {'x': 'y'}
+        eq = p.parse('x:y')
+        assert eq == {'x': 'y'}
 
-        gt = Query(p.parse('x>y'))
-        assert gt.as_dict() == {'x': {'$gte': 'y'}}
+        gt = p.parse('x>y')
+        assert gt == {'x': {'$gte': 'y'}}
 
-        lt = Query(p.parse('x<y'))
-        assert lt.as_dict() == {'x': {'$lte': 'y'}}
+        lt = p.parse('x<y')
+        assert lt == {'x': {'$lte': 'y'}}
 
     def test_operator_in_group(self):
         p = Parser()
-        eq = Query(p.parse('"x:y"'))
-        assert eq.as_dict() == {'x': 'y'}
+        eq = p.parse('"x:y"')
+        assert eq == {'x': 'y'}
 
-        gt = Query(p.parse('"x>y"'))
-        assert gt.as_dict() == {'x': {'$gte': 'y'}}
+        gt = p.parse('"x>y"')
+        assert gt == {'x': {'$gte': 'y'}}
 
-        lt = Query(p.parse('"x<y"'))
-        assert lt.as_dict() == {'x': {'$lte': 'y'}}
+        lt = p.parse('"x<y"')
+        assert lt == {'x': {'$lte': 'y'}}
 
     def test_no_group_or(self):
         p = Parser()
-        query = Query(p.parse('"x:y|x:z"'))
-        assert query.as_dict() == {'$or': [{'x': 'y'}, {'x': 'z'}]}
+        query = p.parse('"x:y|x:z"')
+        assert query == {'$or': [{'x': 'y'}, {'x': 'z'}]}
 
     def test_no_group_and(self):
         p = Parser()
-        query = Query(p.parse('"x:y,a:b"'))
-        assert query.as_dict() == {'$and': [{'x': 'y'}, {'a': 'b'}]}
+        query = p.parse('"x:y,a:b"')
+        assert query == {'$and': [{'x': 'y'}, {'a': 'b'}]}
 
-        query = Query(p.parse('"x:y a:b"'))
-        assert query.as_dict() == {'x': 'y', 'a': 'b'}
+        query = p.parse('"x:y a:b"')
+        assert query == {'x': 'y', 'a': 'b'}
 
     def test_grouped_or_with_and(self):
         p = Parser()
-        query = Query(p.parse('"x:y|a:b","foo:bar"'))
-        assert query.as_dict() == {'$and': [{'$or': [{'x': 'y'}, {'a': 'b'}]},
+        query = p.parse('"x:y|a:b","foo:bar"')
+        assert query == {'$and': [{'$or': [{'x': 'y'}, {'a': 'b'}]},
                                             {'foo': 'bar'}]}
 
     def test_grouped_or_with_implicit_and(self):
         p = Parser()
-        query = Query(p.parse('"x:y|a:b" "foo:bar"'))
-        assert query.as_dict() == {'foo': 'bar',
+        query = p.parse('"x:y|a:b" "foo:bar"')
+        assert query == {'foo': 'bar',
                                    '$or': [{'x': 'y'}, {'a': 'b'}]}
 
     def test_grouped_and_with_or(self):
         p = Parser()
-        query = Query(p.parse('"x>1,x<5" | "y>10|y:None"'))
-        assert query.as_dict() == {'$or': [{'$and': [{'x': {'$gte': '1'}},
+        query = p.parse('"x>1,x<5" | "y>10|y:None"')
+        assert query == {'$or': [{'$and': [{'x': {'$gte': '1'}},
                                                      {'x': {'$lte': '5'}}]},
                                            {'$or': [{'y': {'$gte': '10'}},
                                                     {'y': 'None'}]}]}
@@ -125,9 +125,9 @@ class TestParseAndValidate(object):
     ]
 
     def get_query(self, query):
-        return Query(self.p.parse(query))
+        return self.p.parse(query)
 
     @pytest.mark.parametrize(('query', 'expected'), query_tests)
     def test_map(self, query, expected):
         q = self.get_query(query)
-        assert q.as_dict() == expected
+        assert q == expected
