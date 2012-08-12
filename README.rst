@@ -148,9 +148,6 @@ construct queries: ::
   >>> p = Parser()
   >>> result = p.parse('x > 5, y < 3')
   >>> print result
-  [<mgoquery.AndOr object at 0x10d75f790>]
-  >>> query = Query(result)
-  >>> pprint(query.as_dict())
   {'$and': [{'x': {'$gte': '5'}}, {'y': {'$lte': '3'}}]}
 
 Converting Values in Queries
@@ -164,7 +161,7 @@ function to the Parser constructor.
 Here is a simple session using the same example from above: ::
 
   >>> p = Parser(conversion=lambda key, value: int(value))
-  >>> pprint(Query(p.parse('x:1, y:2')).as_dict())
+  >>> print(p.parse('x:1, y:2'))
   {'$and': [{'x': 1}, {'y': 2}]}
 
 The conversion function should take two arguments, a "key" and
@@ -185,7 +182,7 @@ Here is an example using a potential date parsing function: ::
  
   
   p = Parser(conversion=value_conversion)
-  print(Query(p.parse('startdate:2012-02-03')).as_dict())
+  print(p.parse('startdate:2012-02-03'))
   # prints -> {'starttdate': datetime(2012, 2, 3)}
 
 The return value of the conversion function should be the converted
