@@ -6,9 +6,9 @@ setup_params = dict(
     author='Eric Larson',
     author_email='eric@ionrock.org',
     py_modules=['mgoquery'],
-    use_hg_version=dict(increment='0.1'),    
+    use_hg_version=dict(increment='0.1'),
     install_requires=[
-        'pyparsing'
+        'pyparsing==1.5.7'
     ],
     setup_requires=[
         'hgtools>=1.0',
