@@ -3,15 +3,14 @@ from setuptools import setup
 
 setup_params = dict(
     name='MgoQuery',
+    version='0.3',
+    url='https://bitbucket.org/elarson/mgoquery',
     author='Eric Larson',
     author_email='eric@ionrock.org',
     py_modules=['mgoquery'],
-    use_hg_version=dict(increment='0.1'),
+    description='A concise language parser for creating MongoDB queries',
     install_requires=[
         'pyparsing==1.5.7'
-    ],
-    setup_requires=[
-        'hgtools>=1.0',
     ],
 )
 
