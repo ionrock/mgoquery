@@ -1,5 +1,6 @@
-MgoQuery (MongoDB Query Parser)
-===============================
+=================================
+ MgoQuery (MongoDB Query Parser)
+=================================
 
 A simple query language that returns a valid MongoDB query.
 
@@ -67,14 +68,14 @@ Here are some examples: ::
 
 One thing to note in the above examples is that the values are all
 strings. I will explain how to help the parser know when you want to
-use different types in the parsed output. 
+use different types in the parsed output.
 
 Expressions can be combined in order to create more complex
 expressions. There are two ways to combine expressions, grouping and
 combination operators.
 
 Combination Operators
-~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~
 
 Similar to the operators in expressions, combination operators act
 upon two expressions. ::
@@ -85,13 +86,13 @@ Here are two examples using the two combination operators: ::
 
   x:1 , y:2 => {'$and': [{'x': '1'}, {'y': '2'}]}
   x:1 | y:2 => {'$or': [{'x': '1'}, {'y': '2'}]}
-  
+
 
 The "," acts as an AND operator meaning both expressions would need to
-match in the document for it to be returned. 
+match in the document for it to be returned.
 
 The "|" acts as an OR operator such that either expression can match
-in order for the document to be returned. 
+in order for the document to be returned.
 
 I should be noted that you may only use combination operator at a
 time. There is no precendence that takes place in order to clarify
@@ -121,7 +122,7 @@ see how this works: ::
 
 In this example the groups are surrounded in the quotes and use the
 AND operator. Both groups are then used in an OR operation. In english
-the example would read as: 
+the example would read as:
 
   Select all documents if:
     The key 'x' is greater than or equal to 1 AND
@@ -140,7 +141,7 @@ Using the Parser
 Here is a small session showing how to use the parser in order to
 construct queries: ::
 
-  Python 2.7.1 (r271:86832, Jul 31 2011, 19:30:53) 
+  Python 2.7.1 (r271:86832, Jul 31 2011, 19:30:53)
   [GCC 4.2.1 (Based on Apple Inc. build 5658) (LLVM build 2335.15.00)] on darwin
   Type "help", "copyright", "credits" or "license" for more information.
   >>> from pprint import pprint
@@ -156,7 +157,7 @@ Converting Values in Queries
 As you can see from the examples, the parser default does not make an
 effort to understand the type of value for each expression. In order
 to convert the value to the correct type you can pass a conversion
-function to the Parser constructor. 
+function to the Parser constructor.
 
 Here is a simple session using the same example from above: ::
 
@@ -168,7 +169,7 @@ The conversion function should take two arguments, a "key" and
 "value". The key is the name of the key used by the documents you want
 to query. As MongoDB doesn't support forcing a type on a specific key
 in a collection of documents, we use the name of the key to provide a
-suggestion as to what type to use. 
+suggestion as to what type to use.
 
 Here is an example using a potential date parsing function: ::
 
@@ -179,8 +180,8 @@ Here is an example using a potential date parsing function: ::
       if 'date' in key or 'time' in key:
           return parse_date(value)
       return value
- 
-  
+
+
   p = Parser(conversion=value_conversion)
   print(p.parse('startdate:2012-02-03'))
   # prints -> {'starttdate': datetime(2012, 2, 3)}
