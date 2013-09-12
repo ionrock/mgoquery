@@ -5,7 +5,7 @@ readme = open('README.rst').read()
 
 setup_params = dict(
     name='MgoQuery',
-    version='0.5.2',
+    version='0.5.3',
     url='https://bitbucket.org/elarson/mgoquery',
     author='Eric Larson',
     author_email='eric@ionrock.org',
