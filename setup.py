@@ -13,7 +13,7 @@ setup_params = dict(
     description='A concise language parser for creating MongoDB queries',
     long_description=readme,
     install_requires=[
-        'pyparsing==1.5.7'
+        'pyparsing>=2.0.2'
     ],
 )
 
